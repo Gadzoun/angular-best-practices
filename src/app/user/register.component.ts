@@ -1,0 +1,55 @@
+import { Component } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { DataRepositoryService } from "../services/data-repository.service";
+import { IUser } from "./user.model";
+
+
+@Component({
+    styleUrls: ['./register.component.css'],
+    templateUrl: './register.component.html'
+  })
+  
+export class RegisterComponent {
+    registerForm: FormGroup;
+    firstName: FormControl;
+    lastName: FormControl;
+    email: FormControl;
+    password: FormControl;
+    saving:boolean=false;
+  
+    constructor(private router:Router, private dataRepository: DataRepositoryService) { }
+  
+    ngOnInit() {
+      this.firstName = new FormControl('', Validators.required);
+      this.lastName = new FormControl('', Validators.required);
+      this.email = new FormControl('', Validators.required);
+      this.password = new FormControl('', Validators.required);
+
+      this.registerForm = new FormGroup({
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        password: this.password
+      });
+    }
+  
+    // Pour les membres du même type, ceux public avant ceux private
+    registerUser(user) {
+      this.saving=true;
+      this.saveAndRedirect(user);
+    } 
+
+    cancel() {
+      this.router.navigate(['/']);
+    }
+
+    private saveAndRedirect(user: IUser) {
+      this.dataRepository.saveUser(user)
+        .subscribe({
+          error: ()=> this.saving=false,
+          complete: () => this.router.navigate(['/catalog'])
+      });
+    }
+  }
+  

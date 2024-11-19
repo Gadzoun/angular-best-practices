@@ -1,0 +1,330 @@
+----- ANGULAR CLI -----
+
+Utiliser la CLI d'Angular pour générer le projet et les éléments (composant, modules, directives, ...)
+
+----- Le PRINCIPE DE RESPONSABILITE UNIQUE -----
+
+Il est recommandé d'appliquer ce principe à tous vos composants, vos services et autres éléments. Il permet de rendre votre application plus facile à lire, à maintenir et à tester.
+
+## Règle 1 ##
+
+Définir un seul élément par fichier : un composant, un module ou un service, par exemple.
+Le fait de définir un seul élément par fichier permet plusieurs choses :
+
+Un unique élément par fichier le rend plus facile à lire et à maintenir, et évide les collisions avec les autres développeurs lorsque vous versionnez votre code.
+Cela évite également d'avoir des variables qui peuvent être partagées entre deux composants dans le même fichier, ou autres couplages indésirables.
+
+     Essayer de limiter vos fichiers à 400 lignes. S'ils sont plus longs, c'est que vous avez probablement au moins deux éléments à l’intérieur.
+
+## Règle 2 ##
+
+Définissez des petites fonctions plutôt que des fonctions trop importantes.
+Les petites fonctions sont plus faciles à tester, à lire et à maintenir, et encouragent la réutilisation. Elles aident à éviter les bugs qui se produisent avec les fonctions trop importantes qui partagent des variables avec un contexte externe, ou des couplages indésirables avec les dépendances.
+
+     Essayer de limiter vos fonctions à 75 lignes.
+
+----- CONVENTIONS NOMMAGE OU SYMBOL NAMING -----
+
+Un Symbol fait référence à un élément auquel un humain a donné un nom : une variable, classe, propriété, etc.
+
+Les conventions de nommage sont importantes pour la cohésion de votre application. Nous allons voir que ces conventions s'appliquent aux noms des fichiers, et aussi aux noms des éléments eux-mêmes : composants, services, etc ...
+
+## Règle 1 ##
+
+Utilisez des noms de fichiers consistants pour les éléments que vous définissez : feature.type.extension
+Les noms de fichiers list-pokemons.component.ts, list-pokemons.component.html ou encore pokemons.service.ts respectent cette recommandation. Cela permet aux développeurs d'avoir une idée sur le contenu du fichier en un coup d'oeil. Cela permet également d'avoir une certaine consistance sur les noms des fichiers de l'application, ce qui est primordial lorsqu'on travaille en équipe.
+
+## Règle 2 ##
+
+Utilisez la syntaxe CamelCase pour nommer vos éléments, en suffixant leur nom avec leur type.
+
+De cette manière, vous pourrez identifier rapidement les éléments de votre application. Le tableau ci-dessous illustre l'application de cette règle :
+
+     Le composant AppComponent => app.component.ts
+     Le composant PokemonListComponent => pokemon-list.component.ts
+     Le template de PokemonListComponent => pokemon-list.component.html
+     La feuille de style de PokemonListComponent => pokemon-list.component.css
+     La directive AwesomeDirective => awesome.directive.ts
+     Le service PokemonsService => pokemons.service.ts
+
+## Règle 3 ##
+
+Utiliser la syntaxe kebab-case pour nommer les sélecteurs de vos directives.
+Cette règle peut sembler évidente car les sélecteurs de vos directives seront liés aux attributs d'un élément HTML, qui ont des noms définis en minuscule. De plus, le parseur HTML d'Angular est sensible à la casse, donc vous n'avez pas le choix !
+
+## Règle 4 ##
+
+Utiliser un préfixe personnalisé pour les sélecteurs de vos composants et directives. Par exemple, le préfixe pa pour l'application Pokemon-App ou admin pour une zone dédiée aux fonctionnalités d'administration.
+
+Préfixer les sélecteurs de vos composants et de vos directives ne coûte pas grand chose, et permet d'éviter les collisions dans votre application (de 2 à 4 caractères) : 
+=> Préfix par défaut pour la génération via CLI dans fichier angular.json = "prefix": "myPréfix"
+
+     @Component({
+       selector: 'pa-pokemon'
+     })
+     export class PokemonComponent {}
+    
+     @Component({
+       selector: 'admin-users'
+     })
+     export class UsersComponent {}
+     
+     @Directive({
+       selector: '[paValidate]'
+     })
+     export class ValidateDirective {}
+
+
+----- CONVENTIONS DE CODE -----
+
+## Règle 1 ##
+
+Déclarez des constantes plutôt que des variables si leur valeur ne doit pas changer, avec la syntaxe camelCase plutôt que UPPER_SNAKE_CASE.
+Utiliser des constantes plutôt que des variables lorsque c'est nécessaire nous permet d'informer les autres développeurs que cette valeur est invariable. De plus, TypeScript nous aide en obligeant une initialisation immédiate et en empêchant une réaffectation ultérieure. La syntaxe camelCase a été retenue car elle est plus facile à lire que la syntaxe traditionnelle pour les constantes UPPER_SNAKE_CASE.
+Cependant, on retrouve souvent dans les librairies tierces cette syntaxe traditionnelle, qui est encore très populaire. C'est pourquoi cette syntaxe est tolérée, même s'il est recommandé de déclarer vos constantes avec camelCase:
+
+     export const mockPokemons = ['Salamèche', 'Bulbizzare']; // préférable
+     export const pokemonsUrl = 'api/pokemons'; // préférable
+     export const POKEMONS_URL = 'api/pokemons'; // toléré
+
+
+## Règle 2 ##
+
+Utilisez la syntaxe camelCase pour nommer vos propriétés et méthodes, et n'utilisez pas le préfixe underscore sur les propriétés privées !
+
+TypeScript fait très bien la différence entre une méthode privée ou publique, de même pour les propriétés. Ne vous embêtez pas à ajouter des underscores partout !
+
+## Règle 3 ##
+
+Séparez par un espace les importations des librairies tierces de celles que vous avez codées vous-même.
+
+La ligne vide vous permettra de rendre les importations plus faciles à lire et à localiser:
+
+     import { Component } from '@angular/core';
+     import { Http } from '@angular/http';
+     
+     import { Pokemon } from './pokemon.model';
+     import { OneService, AnotherService, LastService } from '../../shared';
+
+## Règle 4 ##
+
+L'immutabilité fait référence au fait de ne pas changer l'objet en mémoire mais d'en créer un nouveau.
+Exemple de mise en place du concept d'immutabilité.
+     Le second param permet de surchager le paramètre de l'objet en fournissant la nouvelle propriété.
+     La méthode concact permet de renvoyer une nouvelle liste à laquelle on ajout la propriété classId
+     c'est une meilleur pratique que de la rajouter à la liste existante.
+          this.currentUser = { ...this.currentUser, classes: this.currentUser.classes.concat(classId) }
+
+          this.currentUser = user => ne respecte pas le principe d'immutabilité.
+     Les deux variables pointent vers le même objet en mémoire.
+     User aurait pu être modifié à l'extérieur de la fonction = données corrompues.
+
+## Règle 5 ##
+
+Ecrire de petites fonctions de 5 à 10 lignes maximum.
+Sinon découper en plus petites.
+
+## Règle 6 ##
+
+Strict Mode : permet d'attraper de potentiels bugs lors de la compilation en phase de dev.
+Il faut typer et éviter d'utiliser any.
+
+Dans le fichier tsconfig.json il y a l'option strict qui configure la compilation.
+
+"compilerOptions": {
+    "strict": true,
+
+Ensuite on spécifie les options de la compilation :  
+
+"angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+}
+
+## Règle 7 ##
+
+Ne pas utiliser la déclaration des inputs / outputs comme suit : 
+
+@Component({
+  selector: 'custom-component',
+  inputs: ['loading']
+})
+export class CustomComponent {
+  loading: boolean
+}
+
+Mais comme suit (c'est plus compréhensible sur ce qu'est la varaible loading) : 
+
+@Component({
+  selector: 'custom-component',
+  inputs: ['loading']
+})
+export class CustomComponent {
+     @Input() loading: boolean
+}
+
+
+
+----- STRUCTURE APPLICATION -----
+
+Même si vous venez juste de commencer le développement de votre projet, ayez une vision à long terme de la mise en oeuvre de votre application en suivant les recommandations ci-dessous, dès le départ de votre projet:
+
+## Règle 1 ##
+
+     LIFT : Localiser votre code rapidement, Identifier le code en un coup d'oeil, conserver la structure aussi Flat que possible (moins de sept fichiers pas dossier pour être plus exacte), et enfin « Try to be DRY ».
+
+     DRY signifie “Don't Repeat Yourself”. C'est un adage connu des développeurs, qui invite à la centralisation et à la réutilisation d'éléments déjà développés, afin d'éviter de répéter plusieurs fois le même code.
+
+Définissez la structure de votre application en respectant ces grandes lignes directrices, indiqué ici par ordre d'importance. Cela vous permettra de garder une architecture cohé- rente lorsque votre application se développera. Cette architecture modulaire permet aux développeurs de se repérer rapidement dans leur code.
+
+N'hésitez pas à créer un dossier par composant pour respecter le F (Flattest Structure Possible) de LIFT. Dans ce dossier, vous pourrez mettre le fichier TypeScript du composant, sa vue HTML, son style CSS et ses fichiers de tests éventuels. C'est la même logique que d'éviter la complexité cyclomatique.
+
+## Règle 2 ##
+
+Mettez tous les fichiers partagés par un module dans un dossier partagé nommé shared.
+Il faut aussi avoir le template, le css et le ts dans un même dossier.
+
+N'hésitez pas à séparer les fichiers communs à plusieurs composants dans un dossier spécifique. Cela vous permettra de localiser plus rapidement les fichiers partagés. Vous pouvez créer deux types de dossier partagé:
+
+     Au niveau du dossier global app de votre application: vous pouvez définir y placer la barre de navigation, ou un service pour gérer les exceptions de votre application par exemple.
+
+     Au niveau des modules de fonctionnalités: par exemple dans le module des Pokémons, on pourrait placer le service pokemons.service.ts et le modèle pokemon.model.ts dans un dossier partagé.
+
+## Règle 3 ##
+
+Il est possible de créer un fichier qui importe, agrège, et réexporte des éléments. Cette technique s'appelle le barrel et le fichier utilisé pour cela se nomme index.ts, par convention.
+
+Un barrel permet d'agréger plusieurs importations en une seule, ce qui réduit le nombre d'importations que l'on peut déclarer dans un fichier. On a souvent recours à un barrel pour exporter tous les éléments d'un même dossier :
+
+     import {CONFIG, EntityService, ExceptionService, SpinnerService, ToastService} from '../shared';
+
+Cette technique ne fonctionne que si le dossier shared contient un fichier index.ts avec le contenu suivant:
+
+     export * from './config';
+     export * from './entity.service';
+     export * from './exception.service';
+     export * from './filter-text';
+     export * from './init-caps.pipe';
+     export * from './modal';
+     export * from './nav';
+     export * from './spinner';
+     export * from './toast';
+
+C'est assez pratique puisque nous n'avons plus qu'une ligne d'importation dans le reste de l'application !
+
+## Règle 4 ##
+
+Un seul item par fichier : pas de multiple composants, directives, services, etc.. dans un même fichier.
+
+## Règle 5 ##
+
+Mettre en place plusieurs modules par feature est utile pour : 
+     - Le lazy loading des feature modules pour perf de l'appli.
+     - L'encapsulation et l'organisation de haut niveau qui permet de regrouper
+       les éléments entre eux et de n'exposer que ce qui est nécéssaire aux modules externes.
+
+Les 4 types de modules recommandés : 
+     - Routing module
+     - Core Module 
+     - Shared Module
+     - Feature Modules
+
+=> Routing Module : créer un app-routing.module.ts pour rassembler toutes les routes et leurs redirections.
+
+=> Core Module : n'est plus une bonne pratique.
+     Il fournissait les services partagés au niveau de l'application.
+          - Ces services sont mis dans le app.module.ts
+          - De toute façon il fallait quand même importer le CodeMdoule dans le AppModule... 
+     Mais leur bonne pratique est d'être définis au niveau des folders des autres modules.
+     Il pouvait aussi être utile pour fournir les composant utilisés au niveau du composant app:
+          => navbar, menu, etc.
+   Core Folder : remplace le Core Module si on veut rassembler les composants du niveau app (mais pas de services).
+     - On laisse leur déclaration dans le AppModule.
+
+=> Shared Module : fourni les composants, directives et pipes utilisés dans les modules du projet.
+
+=> Feature Module : permet de regrouper du contenu pour 
+     - le charger de manier eagerly ou lazily pour les perfs.
+     - encapsuler pour contrôler ce qui est exporter et ce qui reste privé au module.
+
+
+----- LES COMPOSANTS -----
+
+Quand créer un composant ?
+
+=> On peut créer un composant tant qu'il n'expose pas trop ses interactions d'évènements avec les autres. 
+
+## Règle 0 ##
+
+Séquence de la composition d'un composant, les places : 
+
+     1. Les propriétés au début sous le nom du composant
+     2. Constructor
+     3. Les méthodes
+     
+     => Pour les membres du même type, ceux public (par défaut dans TS) avant ceux private
+
+## Règle 1 ##
+
+Utiliser la syntaxe kebab-case pour les sélecteurs de vos composants.
+Cette syntaxe vous permet de préfixer plus facilement vos sélecteurs avec un espace de nom.
+
+## Règle 2 ##
+
+Il faut extraire du composant les templates et la feuille de style du fichier quand ils font respectivement chacun plus de trois lignes.
+De plus, vous devez nommer le template et les feuilles de style de la même manière que le composant, en changeant juste l'extension du fichier :
+
+     [component-name].component.hml pour le template.
+     [component-name].component.css pour la feuille de style.
+
+## Règle 3 ##
+
+Déclarez les propriétés avant les méthodes dans un composant, et les éléments privés après ceux qui sont publics, par ordre alphabétique.
+
+Il s'agit simplement d'une recommandation pour avoir une structure commune entre tous vos composants.
+
+## Règle 4 ##
+
+Limiter la logique d'un composant aux seules nécessités de la vue. Toutes les autres logiques métiers doivent être déléguées dans des services.
+
+La logique d'un composant pouvant être réutilisé par plusieurs composants doit être placée dans un service, afin d'éviter la redondance dans votre application. Vos composants doivent être uniquement concentrés sur la gestion de la vue, c'est leur rôle principal.
+
+     Pour rappel, évitez d'avoir de la logique métier à l'intérieur de votre template : déplacez-là au niveau de la classe du composant !
+     Dès qu'elle devient complexe il faut créer un service dédié.
+
+## Règle 5 ##
+
+Il faut implémenter les cycles de vue pour rajouter une sécurité au niveau de la compilation.
+
+     export class CustomComponent implements OnInit, OnChanges
+
+----- LES SERVICES -----
+
+## Règle 1 ##
+
+Utiliser les services comme des singletons, avec le même injecteur.
+Lorsque vos services sont des singletons, il est plus simple de les utiliser pour partager des données ou des méthodes à travers un module en particulier, ou dans toute l'application.
+
+## Règle 2 ##
+
+Fournissez les services à l'injecteur d'Angular au niveau du plus haut élément où ils seront partagés.
+Cette règle est principalement due au fait que l'injecteur d'Angular est hiérarchique. Lorsque que l'on fournit un service au composant le plus élevé, cette instance du service est partagée et rendue disponible pour tous les composants fils !
+
+Déclarer les services via l'anotation : 
+     @Injectable({ providedIn : 'root'})
+     => root ou plateform ou customModule etc.. selon là où on veut qu'il soit disponible.
+
+
+## Règle 3 ##
+
+Séparer l'accès aux données dans un service.
+
+La logique de votre application qui concerne les opérations et l'interaction avec des données distantes ou locales doit se faire dans un service dédié, à savoir : les appels XHR, l'accès au local storage, aux données en mémoire et autres...
+
+Nous l'avons déjà vu : le rôle d'un composant est de recueillir et de présenter les données dans la vue. Il ne doit pas se préoccuper de la façon dont ces données sont obtenues, mais de la façon dont elles seront affichées dans la vue !    
+
+
+Un module Lazily-loaded n'est chargé que lorsque l'utilisateur arrive sur cette portion de l'application.
+Eagerly-loaded signifie que le module est chargé au premier chargement de l'app dans le navigateur.
